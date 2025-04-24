@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyCalc with Aminur</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: sans-serif;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+        h1, h2 { text-align: center; margin: 10px 0; }
+        .box {
+            background: #fff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #28a745;
+            color: #fff;
+            border: none;
+        }
+        button:hover { background: #218838; }
+        p { margin: 5px 0; }
+        .result { font-weight: bold; color: #333; }
+    </style>
+</head>
+<body>
+
+<h1>EasyCalc with Aminur</h1>
+
+<div class="box">
+    <h2>সাধারণ ক্যালকুলেটর</h2>
+    <input type="text" id="calc-input" placeholder="সংখ্যা লিখুন">
+    <button onclick="calculate()">=</button>
+    <p class="result" id="calc-result"></p>
+</div>
+
+<div class="box">
+    <h2>BMI ক্যালকুলেটর</h2>
+    <input type="number" id="weight" placeholder="ওজন (কেজি)">
+    <input type="number" id="height" placeholder="উচ্চতা (সেমি)">
+    <button onclick="calculateBMI()">হিসাব করুন</button>
+    <p class="result" id="bmi-result"></p>
+</div>
+
+<div class="box">
+    <h2>বয়স ক্যালকুলেটর</h2>
+    <input type="date" id="dob">
+    <button onclick="calculateAge()">বয়স দেখুন</button>
+    <p class="result" id="age-result"></p>
+</div>
+
+<div class="box">
+    <h2>মৌলিক সংখ্যা চেক</h2>
+    <input type="number" id="prime-input" placeholder="সংখ্যা লিখুন">
+    <button onclick="checkPrime()">চেক করুন</button>
+    <p class="result" id="prime-result"></p>
+</div>
+
+<div class="box">
+    <h2>মৌলিক সংখ্যা (সীমার মধ্যে)</h2>
+    <input type="number" id="prime-lower" placeholder="নিম্ন সংখ্যা">
+    <input type="number" id="prime-upper" placeholder="উচ্চ সংখ্যা">
+    <button onclick="listPrimes()">দেখুন</button>
+    <p class="result" id="prime-list-result"></p>
+</div>
+
+<div class="box">
+    <h2>মুদ্রা রূপান্তরক</h2>
+    <input type="number" id="currency-value" placeholder="মূল্য দিন">
+    <select id="currency-from">
+        <option value="usd">USD</option>
+        <option value="bdt">BDT</option>
+    </select>
+    <select id="currency-to">
+        <option value="usd">USD</option>
+        <option value="bdt">BDT</option>
+    </select>
+    <button onclick="convertCurrency()">রূপান্তর করুন</button>
+    <p class="result" id="currency-result"></p>
+</div>
+
+<div class="box">
+    <h2>ক্যালোরি ক্যালকুলেটর</h2>
+    <input type="number" id="age-calorie" placeholder="বয়স">
+    <input type="number" id="weight-calorie" placeholder="ওজন (কেজি)">
+    <input type="number" id="height-calorie" placeholder="উচ্চতা (সেমি)">
+    <input type="number" id="activity-level" placeholder="ক্রিয়াকলাপ স্তর (1-5)">
+    <button onclick="calculateCalories()">হিসাব করুন</button>
+    <p class="result" id="calorie-result"></p>
+</div>
+
+<div class="box">
+    <h2>সাইন্টিফিক ক্যালকুলেটর</h2>
+    <input type="text" id="sci-input" placeholder="উদাহরণ: Math.sqrt(25) অথবা Math.sin(45)">
+    <button onclick="calculateSci()">=</button>
+    <p class="result" id="sci-result"></p>
+</div>
+
+<script>
+function calculate() {
+    const input = document.getElementById("calc-input").value;
+    try {
+        const result = Function('"use strict";return (' + input + ')')();
+        document.getElementById("calc-result").innerText = "ফলাফল: " + result;
+    } catch {
+        document.getElementById("calc-result").innerText = "ত্রুটি!";
+    }
+}
+
+function calculateBMI() {
+    const w = parseFloat(document.getElementById("weight").value);
+    const h = parseFloat(document.getElementById("height").value);
+    if (!w || !h) return document.getElementById("bmi-result").innerText = "তথ্য দিন";
+    const bmi = w / ((h / 100) ** 2);
+    document.getElementById("bmi-result").innerText = "BMI: " + bmi.toFixed(2);
+}
+
+function calculateAge() {
+    const dob = document.getElementById("dob").value;
+    if (!dob) return document.getElementById("age-result").innerText = "জন্মতারিখ দিন";
+    const birth = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    if (today < new Date(today.getFullYear(), birth.getMonth(), birth.getDate())) age--;
+    document.getElementById("age-result").innerText = "বয়স: " + age + " বছর";
+}
+
+function checkPrime() {
+    const num = parseInt(document.getElementById("prime-input").value);
+    if (num < 2) return document.getElementById("prime-result").innerText = "২ বা বড় সংখ্যা দিন";
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) return document.getElementById("prime-result").innerText = num + " মৌলিক নয়";
+    }
+    document.getElementById("prime-result").innerText = num + " মৌলিক সংখ্যা";
+}
+
+function listPrimes() {
+    const lower = parseInt(document.getElementById("prime-lower").value);
+    const upper = parseInt(document.getElementById("prime-upper").value);
+    if (lower < 2 || upper < 2 || lower >= upper) {
+        document.getElementById("prime-list-result").innerText = "সঠিক সংখ্যা দিন";
+        return;
+    }
+    let primes = [];
+    for (let n = lower; n <= upper; n++) {
+        let isPrime = true;
+        for (let i = 2; i <= Math.sqrt(n); i++) {
+            if (n % i === 0) { isPrime = false; break; }
+        }
+        if (isPrime) primes.push(n);
+    }
+    document.getElementById("prime-list-result").innerText = primes.length ? primes.join(", ") : "কোনো মৌলিক সংখ্যা নেই";
+}
+
+function convertCurrency() {
+    const val = parseFloat(document.getElementById("currency-value").value);
+    if (!val) return document.getElementById("currency-result").innerText = "মূল্য দিন";
+    const from = document.getElementById("currency-from").value;
+    const to = document.getElementById("currency-to").value;
+    let rate = 1;
+    if (from === "usd" && to === "bdt") rate = 110;
+    else if (from === "bdt" && to === "usd") rate = 0.0091;
+    const result = val * rate;
+    document.getElementById("currency-result").innerText = "ফলাফল: " + result.toFixed(2);
+}
+
+function calculateCalories() {
+    const age = parseInt(document.getElementById("age-calorie").value);
+    const weight = parseFloat(document.getElementById("weight-calorie").value);
+    const height = parseFloat(document.getElementById("height-calorie").value);
+    const activity = parseFloat(document.getElementById("activity-level").value);
+    if (!age || !weight || !height || activity < 1 || activity > 5)
+        return document.getElementById("calorie-result").innerText = "সব তথ্য দিন";
+    const bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+    const tdee = bmr * activity;
+    document.getElementById("calorie-result").innerText = "প্রয়োজন: " + tdee.toFixed(0) + " ক্যালরি";
+}
+
+function calculateSci() {
+    const input = document.getElementById("sci-input").value;
+    try {
+        const result = Function('"use strict";return (' + input + ')')();
+        document.getElementById("sci-result").innerText = "ফলাফল: " + result;
+    } catch {
+        document.getElementById("sci-result").innerText = "ত্রুটি!";
+    }
+}
+</script>
+
+</body>
+</html>
